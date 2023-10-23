@@ -1,5 +1,3 @@
-// justify.ts
-
 function justifyText(text: string): string {
     const words = text.split(' ');
     let currentLine = '';
@@ -7,18 +5,33 @@ function justifyText(text: string): string {
   
     for (const word of words) {
       if (currentLine.length + word.length + 1 <= 80) {
-        // Ajoutez le mot à la ligne actuelle avec un espace
         currentLine += (currentLine ? ' ' : '') + word;
       } else {
-        // La ligne actuelle est pleine, ajoutez-la au texte justifié
-        justifiedText += currentLine + '\n';
+        
+        const extraSpaces = 80 - currentLine.length;
+        if (extraSpaces > 1) {
+          const spacesToAdd = extraSpaces / (currentLine.split(' ').length - 1);
+          const remainder = extraSpaces % (currentLine.split(' ').length - 1);
+          let justifiedLine = '';
+          const wordsInLine = currentLine.split(' ');
   
-        // Réinitialisez la ligne actuelle avec le nouveau mot
+          for (let i = 0; i < wordsInLine.length; i++) {
+            justifiedLine += wordsInLine[i];
+            if (i < wordsInLine.length - 1) {
+              const spaces = i < remainder ? spacesToAdd + 1 : spacesToAdd;
+              justifiedLine += ' '.repeat(spaces);
+            }
+          }
+  
+          justifiedText += justifiedLine + '\n';
+        } else {
+          justifiedText += currentLine + '\n';
+        }
+  
         currentLine = word;
       }
     }
   
-    // Ajoutez la dernière ligne au texte justifié
     justifiedText += currentLine;
   
     return justifiedText;
