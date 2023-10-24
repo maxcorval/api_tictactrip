@@ -1,5 +1,7 @@
 import express, { Request, Response } from 'express';
-import { validateToken } from './authentification';
+
+import { justifyText } from './justify';
+import { authRouter, validateToken } from './authentification'; // Assurez-vous d'importer validateToken
 
 const app = express();
 const port = 3000;
@@ -16,17 +18,15 @@ app.listen(port, () => {
 
 const wordsByToken: Record<string, number> = {};
 
-app.use('/api/justify', (req: Request, res: Response, next) => {
-  const { token } = req.body;
-  if (!validateToken(token)) {
-    return res.status(401).json({ error: 'Invalid token' });
-  }
-  next();
-});
+app.use('/api/justify', authRouter); // Utilisez le routeur d'authentification
 
-app.use('/api/justify', (req: Request, res: Response, next) => {
+app.post('/api/justify', (req: Request, res: Response) => {
   const { token, text } = req.body;
-  
+
+  if (!token || !text) {
+    return res.status(400).json({ error: 'Token and text are required' });
+  }
+
   const wordCount = text.split(' ').length;
   const currentWordCount = wordsByToken[token] || 0;
 
@@ -34,10 +34,9 @@ app.use('/api/justify', (req: Request, res: Response, next) => {
     return res.status(402).json({ error: 'Payment Required' });
   }
 
-  
   wordsByToken[token] = currentWordCount + wordCount;
 
-  next();
+  const justifiedText = justifyText(text);
+
+  res.send(justifiedText);
 });
-
-

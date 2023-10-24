@@ -1,4 +1,4 @@
-function justifyText(text: string): string {
+export function justifyText(text: string): string {
     const words = text.split(' ');
     let currentLine = '';
     let justifiedText = '';
@@ -37,5 +37,5 @@ function justifyText(text: string): string {
     return justifiedText;
   }
   
-  export { justifyText };
+  //export { justifyText };
   

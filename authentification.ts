@@ -1,4 +1,5 @@
 import express, { Request, Response } from 'express';
+
 const authRouter = express.Router();
 const tokens = new Map<string, string>();
 
@@ -12,18 +13,16 @@ authRouter.post('/api/token', (req: Request, res: Response) => {
     res.status(400).json({ error: 'Invalid email' });
   }
 });
-export function validateToken(token: string): boolean {
-  
-    const validTokens = ["token1", "token2", "token3"]; 
 
-    if (validTokens.includes(token)) {
-        return true; // Le token est valide
-    } else {
-        return false; // Le token n'est pas valide
-    }
-}
+export { authRouter };
 
 function generateUniqueToken() {
   return 'your-unique-token';
 }
 
+export function validateToken(token: string): boolean {
+    // Votre logique de validation de token ici.
+    // Par exemple, vérifiez si le token est présent dans la map de tokens.
+  
+    return tokens.has(token);
+  }
